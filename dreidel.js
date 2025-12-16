@@ -9,8 +9,7 @@ function setup() {
   describe("A dreidel");
 }
 function draw() {
-  background(200);
-  debugMode();
+  background(255);
   fill(82, 162, 255);
   orbitControl();
   noStroke();
