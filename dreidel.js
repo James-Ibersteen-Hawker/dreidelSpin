@@ -1,30 +1,44 @@
-let shape, img;
-let currentAngle = 0;
-let decrease = 1;
-let turning = true;
-let speed = 0.2;
-let speedIncrease = 0;
-let runningTotal = Math.PI / 2;
-let increment = Math.PI / 2;
-let matchAngle = false;
-const threshold = 20;
-const decreaseAmount = 0.99;
-//vertical rotation end
+const spin = {
+  shape: null,
+  img: null,
+  curANG: 0,
+  dec: 1,
+  turn: true,
+  speed: 0.2,
+  spINC: 0,
+  runTotal: Math.PI / 2,
+  incr: Math.PI / 2,
+  match: false,
+  handle: true,
+  threshold: 0.06,
+  decAMNT: 0.99,
+  sides: ["hey", "gimmel", "nun", "shin"],
+  lights: [
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+    [1, 0],
+  ],
+};
 function preload() {
-  shape = loadModel("dreidel.obj", true);
-  img = loadImage("Dreidel.png");
+  spin.shape = loadModel("dreidel.obj", true);
+  spin.img = loadImage("Dreidel.png");
 }
 function setup() {
-  createCanvas(400, 400, WEBGL);
+  const myCanvas = createCanvas(400, 400, WEBGL);
   describe("A dreidel");
   window.addEventListener("click", () => {
-    turning = true;
-    decrease = 1;
+    spin.turn = true;
+    spin.match = false;
+    spin.dec = 1;
+    spin.handle = true;
   });
   window.addEventListener("dblclick", () => {
-    turning = true;
-    decrease = 0.9;
-    speed *= 1.1;
+    spin.turn = true;
+    spin.match = false;
+    spin.dec = 0.9;
+    spin.speed *= 1.1;
+    spin.handle = true;
   });
 }
 function draw() {
@@ -34,34 +48,38 @@ function draw() {
   {
     push();
     const c = color(255);
-    const north = createVector(-1, 0, -0.3).normalize();
-    directionalLight(c, north.x, north.y, north.z);
-    const east = createVector(0, 1, -0.3).normalize();
-    directionalLight(c, east.x, east.y, east.z);
-    const west = createVector(0, -1, -0.3).normalize();
-    directionalLight(c, west.x, west.y, west.z);
-    const south = createVector(1, 0, -0.3).normalize();
-    directionalLight(c, south.x, south.y, south.z);
-    texture(img);
+    spin.lights.forEach(([x, y]) => {
+      const v = createVector(x, y, -0.3).normalize();
+      directionalLight(c, v.x, v.y, v.z);
+    });
+    texture(spin.img);
     rotateZ(PI);
     scale(-1, 1);
-    if (turning) {
-      if (!matchAngle) {
-        speedIncrease = speed * decrease;
-        currentAngle += speedIncrease;
-        decrease *= decreaseAmount;
-        if (currentAngle > runningTotal) runningTotal += increment;
-        if (decrease < 0.01) matchAngle = true;
+    if (spin.turn) {
+      if (!spin.match) {
+        spin.spINC = spin.speed * spin.dec;
+        spin.curANG += spin.spINC;
+        spin.dec *= spin.decAMNT;
+        if (spin.curANG > spin.runTotal) spin.runTotal += spin.incr;
+        if (spin.dec < 0.01) spin.match = true;
       } else {
-        const distance = runningTotal - currentAngle;
-        currentAngle += distance * decrease;
+        const d1 = spin.runTotal - spin.curANG;
+        const d2 = d1 - spin.incr;
+        const dist = Math.abs(d2) < Math.abs(d1) ? d2 : d1;
+        spin.curANG +=
+          Math.sign(dist) * Math.min(Math.abs(dist * spin.dec), spin.spINC);
+        if (Math.abs(dist) < spin.threshold) {
+          spin.turn = false;
+          spin.match = false;
+          if (spin.handle) {
+            handle(spin.curANG);
+            spin.handle = false;
+          }
+        }
       }
-      rotateY(currentAngle);
-    } else {
-      rotateY(currentAngle);
-      speed = 0.2;
-    }
-    model(shape);
+    } else spin.speed = 0.2;
+    rotateY(spin.curANG);
+    model(spin.shape);
     pop();
   }
   //plane
@@ -74,4 +92,9 @@ function draw() {
     plane(300, 300);
     pop();
   }
+}
+function handle(angle) {
+  const num = Math.round(angle / (Math.PI / 2)) % spin.sides.length;
+  const result = spin.sides[num];
+  alert(result);
 }
