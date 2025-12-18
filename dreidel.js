@@ -1,12 +1,17 @@
-let shape, bg, img;
-let decrease = 1;
+let shape, img;
 let currentAngle = 0;
+let decrease = 1;
 let turning = true;
 let speed = 0.2;
+let speedIncrease = 0;
+let runningTotal = Math.PI / 2;
+let increment = Math.PI / 2;
+let matchAngle = false;
 const threshold = 20;
+const decreaseAmount = 0.99;
+//vertical rotation end
 function preload() {
   shape = loadModel("dreidel.obj", true);
-  bg = loadImage("cayley_interior.jpg");
   img = loadImage("Dreidel.png");
 }
 function setup() {
@@ -41,10 +46,17 @@ function draw() {
     rotateZ(PI);
     scale(-1, 1);
     if (turning) {
-      currentAngle += speed * decrease;
-      decrease *= 0.99;
+      if (!matchAngle) {
+        speedIncrease = speed * decrease;
+        currentAngle += speedIncrease;
+        decrease *= decreaseAmount;
+        if (currentAngle > runningTotal) runningTotal += increment;
+        if (decrease < 0.01) matchAngle = true;
+      } else {
+        const distance = runningTotal - currentAngle;
+        currentAngle += distance * decrease;
+      }
       rotateY(currentAngle);
-      if (Math.abs((currentAngle % 1) - 1) < 0.0001) turning = false;
     } else {
       rotateY(currentAngle);
       speed = 0.2;
