@@ -1,4 +1,11 @@
-const gameState = Vue.reactive({result: "-"});
+class Player {
+  constructor(username) {
+    this.username = username;
+    this.total = 0;
+    this.turn = false;
+  }
+}
+const gameState = Vue.reactive({ result: "-" });
 const spin = {
   shape: null,
   img: null,
@@ -14,6 +21,7 @@ const spin = {
   threshold: 0.06,
   decAMNT: 0.99,
   sides: ["hey", "gimmel", "nun", "shin"],
+  decreasing: false,
   lights: [
     [-1, 0],
     [0, 1],
@@ -22,7 +30,7 @@ const spin = {
   ],
 };
 function preload() {
-  spin.shape = loadModel("dreidel.obj", true);
+  spin.shape = loadModel("dreidel.obj", true); //load model here
   spin.img = loadImage("Dreidel.png");
 }
 function setup() {
@@ -33,6 +41,7 @@ function setup() {
     spin.turn = true;
     spin.match = false;
     spin.dec = 1;
+    spin.decreasing = true;
     spin.handle = true;
   });
   window.addEventListener("dblclick", () => {
@@ -40,13 +49,14 @@ function setup() {
     spin.match = false;
     spin.dec = 0.9;
     spin.speed *= 1.1;
+    spin.decreasing = true;
     spin.handle = true;
   });
 }
 function draw() {
   background(158, 228, 255);
   noStroke();
-  camera(0, 0, 800, 0, 0, 0);
+  camera(0, -120, 800, 0, 0, 0);
   {
     push();
     const c = color(255);
@@ -54,14 +64,17 @@ function draw() {
       const v = createVector(x, y, -0.3).normalize();
       directionalLight(c, v.x, v.y, v.z);
     });
-    texture(spin.img);
+    texture(spin.img); //texture here
     rotateZ(PI);
     scale(-1, 1);
     if (spin.turn) {
       if (!spin.match) {
         spin.spINC = spin.speed * spin.dec;
         spin.curANG += spin.spINC;
-        spin.dec *= spin.decAMNT;
+        if (spin.decreasing) {
+          spin.dec *= spin.decAMNT;
+          spin.speed = 0.2;
+        } else spin.speed = 0.05;
         if (spin.curANG > spin.runTotal) spin.runTotal += spin.incr;
         if (spin.dec < 0.01) spin.match = true;
       } else {
@@ -99,13 +112,40 @@ function handle(angle) {
   const result = spin.sides[num];
   gameState.result = result;
   console.log(result);
-  //other functions to do stuff
 }
-
 const app = Vue.createApp({
   data() {
     return {
-    result: gameState.result
-    }
-  }
-}).mount("#vue_app")
+      result: gameState,
+      currencies: ["Chocolate Chips", "Tokens", "Coins", "$100 Bills"],
+      currency: "Chocolate Chips",
+      players: [],
+      newUserName: "",
+      playersLeft: [],
+      playersRight: [],
+      round: 1,
+      pot: 0,
+      winner: null,
+      currencyChosen: "",
+    };
+  },
+  methods: {
+    addUser() {
+      if (this.newUserName != "") {
+        this.players.push(new Player(this.newUserName));
+        this.newUserName = "";
+      }
+    },
+    deletePlayer(i) {
+      this.players.splice(i, 1);
+    },
+    startGame() {
+      document.querySelector(".openScreen").classList.add("off");
+      this.players.forEach((e, i) => {
+        if (i % 2 === 0) this.playersLeft.push(e);
+        if (i % 2 === 1) this.playersRight.push(e);
+      });
+      this.currencyChosen = this.currency;
+    },
+  },
+}).mount("#vue_app");

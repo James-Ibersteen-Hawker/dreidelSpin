@@ -21,10 +21,85 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body class="container-fluid">
-    <header>Chanukkah Dreidel</header>
+  <body class="container-fluid" id="vue_app">
+    <header>Chanukah Dreidel</header>
+    <div class="openScreen">
+      <h1>openScreen</h1>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          players
+          <ul>
+            <li v-for="(player, i) in players">
+              {{player.username}}
+              <div @click="deletePlayer(i)">delete</div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div>Currency</div>
+          <select v-model="currency">
+            <option v-for="c in currencies" :value="c" :key="c">{{c}}</option>
+          </select>
+          <div>Selected: {{currency}}</div>
+          <div class="newPlayer">
+            <div>New Player Maker</div>
+            <form @submit.prevent="addUser">
+              <label for="name">Username -&nbsp;</label>
+              <input
+                type="text"
+                placeholder="Username"
+                id="name"
+                name="name"
+                v-model="newUserName"
+                maxlength="10"
+              />
+              <input
+                type="Submit"
+                value="Add User"
+                :disabled="!newUserName.trim()"
+              />
+            </form>
+          </div>
+        </div>
+      </div>
+      <input
+        @click="startGame()"
+        type="submit"
+        value="Start Game"
+        :disabled="players.length < 2"
+      />
+    </div>
     <main>
-      <div id="canvasDiv"></div>
+      <div class="row">
+        <div class="col-3">
+          Players:
+          <div class="player" v-for="player in playersLeft">
+            <h2>{{player.username}}</h2>
+            <div class="row">
+              <div class="col-12">{{player.total}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div>Round: {{round}}</div>
+          <div>Currency: {{currencyChosen}}</div>
+          <div id="canvasDiv"></div>
+          <div>dreidel result: {{result.result}}</div>
+        </div>
+        <div class="col-3">
+          Players:
+          <div class="player" v-for="player in playersRight">
+            <h2>{{player.username}}</h2>
+            <div class="row">
+              <div class="col-12">{{player.total}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 pot">Pot: {{pot}}</div>
+        <div class="col-12 winner" :class="{'off': !winner}">
+          Winner: {{winner}}
+        </div>
+      </div>
     </main>
     <footer></footer>
     <script

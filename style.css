@@ -18,6 +18,43 @@ html {
       text-align: center;
       padding-top: 10px;
     }
+    .openScreen {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: green;
+      max-height: 500px;
+      height: 40%;
+      max-width: 700px;
+      width: 60%;
+      margin: 0 !important;
+      h1 {
+        text-align: center;
+        background: purple;
+        padding-top: 8px;
+        padding-bottom: 10px;
+        height: 70px;
+        margin: 0 !important;
+      }
+      .row {
+        border: 1px solid black;
+        width: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+        .col-12 {
+          border: 1px solid red;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        .col-sm-6:nth-child(1) {
+          background-color: rgb(149, 149, 255);
+        }
+        .col-sm-6:nth-child(2) {
+          background-color: rgb(100, 100, 212);
+        }
+      }
+    }
     main {
       #canvasDiv {
         width: 90%;
@@ -29,6 +66,16 @@ html {
         align-items: center;
         padding: 10px;
       }
+      .player {
+        background: blue;
+        border: 1px solid gold;
+        margin: 10px;
+        color: white;
+      }
     }
   }
+}
+
+.off {
+  display: none;
 }
