@@ -25,7 +25,8 @@ function preload() {
   spin.img = loadImage("Dreidel.png");
 }
 function setup() {
-  const myCanvas = createCanvas(400, 400, WEBGL);
+  const myCanvas = createCanvas(300, 300, WEBGL);
+  myCanvas.parent("#canvasDiv");
   describe("A dreidel");
   window.addEventListener("click", () => {
     spin.turn = true;
@@ -42,7 +43,7 @@ function setup() {
   });
 }
 function draw() {
-  background(100, 190, 255);
+  background(158, 228, 255);
   noStroke();
   camera(0, 0, 800, 0, 0, 0);
   {
@@ -82,19 +83,18 @@ function draw() {
     model(spin.shape);
     pop();
   }
-  //plane
   {
     push();
     ambientLight(255);
-    ambientMaterial(200);
+    ambientMaterial(0, 97, 133);
     translate(0, 100, 0);
     rotateX(HALF_PI);
-    plane(300, 300);
+    plane(500, 600);
     pop();
   }
 }
 function handle(angle) {
   const num = Math.round(angle / (Math.PI / 2)) % spin.sides.length;
   const result = spin.sides[num];
-  alert(result);
+  console.log(result);
 }
