@@ -1,3 +1,4 @@
+const gameState = Vue.reactive({result: "-"});
 const spin = {
   shape: null,
   img: null,
@@ -96,5 +97,15 @@ function draw() {
 function handle(angle) {
   const num = Math.round(angle / (Math.PI / 2)) % spin.sides.length;
   const result = spin.sides[num];
+  gameState.result = result;
   console.log(result);
+  //other functions to do stuff
 }
+
+const app = Vue.createApp({
+  data() {
+    return {
+    result: gameState.result
+    }
+  }
+}).mount("#vue_app")
