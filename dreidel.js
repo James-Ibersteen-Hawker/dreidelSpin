@@ -1,8 +1,9 @@
 class Player {
-  constructor(username) {
+  constructor(username, index, total) {
     this.username = username;
-    this.total = 0;
+    this.total = total;
     this.turn = false;
+    this.index = index;
   }
 }
 const gameState = Vue.reactive({ result: "-" });
@@ -37,21 +38,6 @@ function setup() {
   const myCanvas = createCanvas(300, 300, WEBGL);
   myCanvas.parent("#canvasDiv");
   describe("A dreidel");
-  window.addEventListener("click", () => {
-    spin.turn = true;
-    spin.match = false;
-    spin.dec = 1;
-    spin.decreasing = true;
-    spin.handle = true;
-  });
-  window.addEventListener("dblclick", () => {
-    spin.turn = true;
-    spin.match = false;
-    spin.dec = 0.9;
-    spin.speed *= 1.1;
-    spin.decreasing = true;
-    spin.handle = true;
-  });
 }
 function draw() {
   background(158, 228, 255);
@@ -113,6 +99,13 @@ function handle(angle) {
   gameState.result = result;
   console.log(result);
 }
+function spinDreidel() {
+  spin.turn = true;
+  spin.match = false;
+  spin.dec = 1;
+  spin.decreasing = true;
+  spin.handle = true;
+}
 const app = Vue.createApp({
   data() {
     return {
@@ -133,7 +126,13 @@ const app = Vue.createApp({
   methods: {
     addUser() {
       if (this.newUserName != "") {
-        this.players.push(new Player(this.newUserName));
+        this.players.push(
+          new Player(
+            this.newUserName,
+            this.players.length,
+            this.randmNum(10, 15)
+          )
+        );
         this.newUserName = "";
       }
     },
@@ -147,6 +146,15 @@ const app = Vue.createApp({
         if (i % 2 === 1) this.playersRight.push(e);
       });
       this.currencyChosen = this.currency;
+      this.turn(0);
+    },
+    turn(index) {
+      this.players.forEach((e, i) => {
+        e.turn = index === i ? true : false;
+      });
+    },
+    randmNum(max, min) {
+      return Math.floor(Math.random() * (max - min)) + min;
     },
   },
 }).mount("#vue_app");

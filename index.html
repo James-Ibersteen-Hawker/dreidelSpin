@@ -102,10 +102,15 @@
       <div class="row">
         <div class="col-3">
           Players:
-          <div class="player" v-for="player in playersLeft">
+          <div
+            class="player"
+            v-for="player in playersLeft"
+            :id="player.index"
+            :class="{'turn': player.turn}"
+          >
             <h2>{{player.username}}</h2>
             <div class="row">
-              <div class="col-12">{{player.total}}</div>
+              <div class="col-12">Total: {{player.total}}</div>
             </div>
           </div>
         </div>
@@ -117,10 +122,15 @@
         </div>
         <div class="col-3">
           Players:
-          <div class="player" v-for="player in playersRight">
+          <div
+            class="player"
+            v-for="player in playersRight"
+            :id="player.index"
+            :class="{'turn': player.turn}"
+          >
             <h2>{{player.username}}</h2>
             <div class="row">
-              <div class="col-12">{{player.total}}</div>
+              <div class="col-12">Total: {{player.total}}</div>
             </div>
           </div>
         </div>

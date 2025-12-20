@@ -50,7 +50,6 @@ html {
         margin: 0 !important;
         height: calc(100% - 70px);
         overflow: auto;
-
         input[type="submit"] {
           font-family: "Niconne", cursive;
           font-size: 20px;
@@ -142,6 +141,7 @@ html {
               width: 40%;
               padding: 0 !important;
               margin: 0 !important;
+              user-select: none;
             }
             select,
             input:not([type="submit"]) {
@@ -156,6 +156,7 @@ html {
               transition: 0.2s;
               font-variant: small-caps;
               text-align: left;
+              user-select: none;
               option {
                 background: rgba(255, 255, 255, 0.473) !important;
               }
@@ -239,4 +240,10 @@ html {
 
 .off {
   display: none;
+}
+
+.turn {
+  background: orange !important;
+  border: 2px solid white !important;
+  box-sizing: border-box;
 }
