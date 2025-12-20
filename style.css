@@ -12,8 +12,9 @@ html {
     padding: 0 !important;
     margin: 0 !important;
     background: linear-gradient(10deg, white, rgb(130, 205, 255));
+    --standardBorder: 1px solid rgb(184, 169, 104);
     header {
-      font-family: "Bucklane", script;
+      font-family: "Bucklane", cursive;
       font-size: 40px;
       text-align: center;
       padding-top: 10px;
@@ -33,7 +34,7 @@ html {
         height: 70px;
         line-height: 70px;
         margin: 0 !important;
-        font-family: "Bucklane", script;
+        font-family: "Bucklane", cursive;
         background: url("goldBorder.png");
         background-size: 65% 90%;
         background-repeat: no-repeat;
@@ -49,6 +50,24 @@ html {
         margin: 0 !important;
         height: calc(100% - 70px);
         overflow: auto;
+
+        input[type="submit"] {
+          font-family: "Niconne", cursive;
+          font-size: 20px;
+          background: rgb(228, 242, 255);
+          border: 2px outset rgb(85, 100, 184);
+          border-radius: 5px;
+          padding-right: 20px;
+          padding-left: 20px;
+          transition: 0.2s;
+        }
+        input[type="submit"]:hover {
+          background: rgb(203, 216, 228);
+          transition: 0.2s;
+        }
+        .startGame {
+          text-align: center;
+        }
         .col-sm-6 {
           padding: 0 !important;
           margin: 0 !important;
@@ -61,7 +80,7 @@ html {
             font-style: italic;
             padding-top: 5px;
             padding-bottom: 2px;
-            border-bottom: 1px solid rgb(184, 169, 104);
+            border-bottom: var(--standardBorder);
             margin: 0 !important;
             height: 33px;
             font-weight: 800;
@@ -79,6 +98,7 @@ html {
             scrollbar-color: rgba(32, 110, 255, 0.562) transparent;
             scrollbar-width: thin;
             li {
+              font-variant: small-caps;
               div {
                 width: 98%;
                 display: flex;
@@ -86,11 +106,17 @@ html {
                 align-items: center;
                 font-style: italic;
                 span {
+                  filter: drop-shadow(0px 0px 0px black);
+                  transition: 0.1s;
                   cursor: pointer;
                   svg {
                     height: 90%;
                     transform: scale(0.8);
                   }
+                }
+                span:hover {
+                  filter: drop-shadow(0px 0px 2px black);
+                  transition: 0.1s;
                 }
               }
             }
@@ -98,31 +124,60 @@ html {
         }
         .col-sm-6:nth-child(2) {
           box-sizing: border-box;
+          padding-top: 10px;
           .body {
             height: 100%;
             overflow: auto;
             scrollbar-color: rgba(32, 110, 255, 0.562) transparent;
             scrollbar-width: thin;
-            label,
-            h3 {
+            .currency {
+              margin-top: 5px;
+              border-top: var(--standardBorder);
+            }
+            label {
               display: inline-block;
               font-size: 18px;
               font-style: italic;
               font-family: "Times New Roman", Times, serif;
-              max-width: 50%;
+              width: 40%;
               padding: 0 !important;
               margin: 0 !important;
             }
-            input {
-              display: inline-block;
-              max-width: 50%;
+            select,
+            input:not([type="submit"]) {
+              max-width: 55%;
               padding: 0 !important;
-              margin: 0 !important;
+              margin: 2px 0 0 0 !important;
+              border: none;
+              padding-left: 5px !important;
+              background: transparent;
+              border-bottom: 1px solid rgb(66, 0, 128);
+              padding-bottom: 0 !important;
+              transition: 0.2s;
+              font-variant: small-caps;
+              text-align: left;
+              option {
+                background: rgba(255, 255, 255, 0.473) !important;
+              }
+            }
+            input:not([type="submit"]):focus {
+              outline: none !important;
+              background: rgba(135, 201, 255, 0.438);
+              transition: 0.2s;
             }
             .newPlayer {
               h2 {
-                border-top: 1px solid rgb(184, 169, 104);
+                border-top: var(--standardBorder);
+                margin-bottom: 10px;
               }
+            }
+            .submitBtn {
+              text-align: center;
+              padding-top: 3px;
+            }
+            input[type="submit"] {
+              width: 95%;
+              letter-spacing: 2px;
             }
           }
         }
@@ -152,7 +207,12 @@ html {
         0px 0px 5px 9px rgba(53, 53, 53, 0.6),
         0px 0px 5px rgba(53, 53, 53, 0.6) inset;
       pointer-events: none;
-      background: linear-gradient(30deg, white, rgb(129, 205, 255));
+      background: linear-gradient(
+          30deg,
+          rgba(255, 255, 255, 0.8),
+          rgba(129, 205, 255, 0.8)
+        ),
+        url("openBG.jfif");
 
       z-index: -1;
     }

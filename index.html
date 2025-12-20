@@ -16,6 +16,12 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Niconne&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
     <link rel="stylesheet" href="style.css" />
@@ -51,17 +57,8 @@
         </div>
         <div class="col-12 col-sm-6">
           <div class="body">
-            <label for="currency">&nbsp- Currency: &nbsp;</label>
-            <select v-model="currency" id="currency">
-              <option v-for="c in currencies" :value="c" :key="c">{{c}}</option>
-            </select>
-            <div>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <h3>Selected:</h3>
-              {{currency}}
-            </div>
             <div class="newPlayer">
-              <h2>New Player Maker</h2>
+              <h2>- New Player Maker -</h2>
               <form @submit.prevent="addUser">
                 <label for="name">&nbsp;- Username:&nbsp;</label>
                 <input
@@ -74,16 +71,24 @@
                 />
                 <div class="submitBtn">
                   <input
-                    type="Submit"
-                    value="Add User"
+                    type="submit"
+                    value="— Add User —"
                     :disabled="!newUserName.trim()"
                   />
                 </div>
               </form>
             </div>
+            <div class="currency">
+              <label for="currency">&nbsp- Currency: &nbsp;</label>
+              <select v-model="currency" id="currency">
+                <option v-for="c in currencies" :value="c" :key="c">
+                  {{c}}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
-        <div class="col-12">
+        <div class="col-12 startGame">
           <input
             @click="startGame()"
             type="submit"
