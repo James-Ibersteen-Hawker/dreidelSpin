@@ -127,6 +127,7 @@ const app = Vue.createApp({
       pot: 0,
       winner: null,
       currencyChosen: "",
+      title: "Chanukah Dreidel",
     };
   },
   methods: {

@@ -22,52 +22,76 @@
   </head>
 
   <body class="container-fluid" id="vue_app">
-    <header>Chanukah Dreidel</header>
+    <header>{{title}}</header>
     <div class="openScreen">
-      <h1>openScreen</h1>
+      <h1>{{title}}</h1>
       <div class="row">
         <div class="col-12 col-sm-6">
-          players
+          <h2>- Players -</h2>
           <ul>
             <li v-for="(player, i) in players">
-              {{player.username}}
-              <div @click="deletePlayer(i)">delete</div>
+              <div>
+                {{player.username}}
+                <span @click="deletePlayer(i)"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-x-lg"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"
+                    /></svg
+                ></span>
+              </div>
             </li>
           </ul>
         </div>
         <div class="col-12 col-sm-6">
-          <div>Currency</div>
-          <select v-model="currency">
-            <option v-for="c in currencies" :value="c" :key="c">{{c}}</option>
-          </select>
-          <div>Selected: {{currency}}</div>
-          <div class="newPlayer">
-            <div>New Player Maker</div>
-            <form @submit.prevent="addUser">
-              <label for="name">Username -&nbsp;</label>
-              <input
-                type="text"
-                placeholder="Username"
-                id="name"
-                name="name"
-                v-model="newUserName"
-                maxlength="10"
-              />
-              <input
-                type="Submit"
-                value="Add User"
-                :disabled="!newUserName.trim()"
-              />
-            </form>
+          <div class="body">
+            <label for="currency">&nbsp- Currency: &nbsp;</label>
+            <select v-model="currency" id="currency">
+              <option v-for="c in currencies" :value="c" :key="c">{{c}}</option>
+            </select>
+            <div>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <h3>Selected:</h3>
+              {{currency}}
+            </div>
+            <div class="newPlayer">
+              <h2>New Player Maker</h2>
+              <form @submit.prevent="addUser">
+                <label for="name">&nbsp;- Username:&nbsp;</label>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  id="name"
+                  name="name"
+                  v-model="newUserName"
+                  maxlength="10"
+                />
+                <div class="submitBtn">
+                  <input
+                    type="Submit"
+                    value="Add User"
+                    :disabled="!newUserName.trim()"
+                  />
+                </div>
+              </form>
+            </div>
           </div>
         </div>
+        <div class="col-12">
+          <input
+            @click="startGame()"
+            type="submit"
+            value="Start Game"
+            :disabled="players.length < 2"
+          />
+        </div>
       </div>
-      <input
-        @click="startGame()"
-        type="submit"
-        value="Start Game"
-        :disabled="players.length < 2"
-      />
     </div>
     <main>
       <div class="row">
