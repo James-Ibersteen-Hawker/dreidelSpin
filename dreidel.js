@@ -32,7 +32,7 @@ const spin = {
   handle: true,
   threshold: 0.06,
   decAMNT: 0.99,
-  sides: ["hei", "gimmel", "nun", "shin"],
+  sides: ["gimmel", "gimmel", "gimmel", "gimmel"], //hei, gimmel, nun, shin
   decreasing: false,
   lights: [
     [-1, 0],
@@ -106,7 +106,7 @@ function draw() {
   }
 }
 function handle(angle) {
-  const num = Math.round(angle / (Math.PI / 2)) % spin.sides.length;
+  const num = Math.abs(Math.round(angle / (Math.PI / 2)) % spin.sides.length);
   const result = spin.sides[num];
   gameState.result = result;
   spin.endCallBack();
@@ -154,12 +154,12 @@ const app = Vue.createApp({
     },
     async gameLoop() {
       let i = 0;
-      this.players.forEach((e) => (e.total--, this.pot++));
+      this.giveOne();
       await this.wait(1600);
       while (this.players.length > 1) {
-        this.players.forEach((e) => (e.total--, this.pot++));
+        this.giveOne();
         await this.wait(1600);
-        this.turn(i), this.round++;
+        this.turn(i);
         const waitPress = new Promise((res) => (spin.endCallBack = res));
         this.spinnable.canSpin = true;
         await waitPress;
@@ -184,7 +184,7 @@ const app = Vue.createApp({
         await this.wait(1600);
         currentPlayer.total--;
         this.pot++;
-        await this.wait(3600);
+        await this.wait(1600);
         if (currentPlayer.total <= 0) {
           alert(`${currentPlayer.username} is out`);
           this.players.splice(i, 1);
@@ -196,6 +196,7 @@ const app = Vue.createApp({
           });
         } else i = (i + 1) % this.players.length;
         this.returnNormal();
+        this.round++;
       }
       this.winner = this.players?.[0]?.username;
     },
@@ -216,10 +217,13 @@ const app = Vue.createApp({
       spin.match = false;
       spin.dec = 1;
       spin.handle = true;
-      this.result = "-";
+      this.result.result = "-";
     },
     wait(t) {
       return new Promise((resolve) => setTimeout(resolve, t));
+    },
+    giveOne() {
+      this.players.forEach((e) => (e.total--, this.pot++));
     },
   },
 }).mount("#vue_app");

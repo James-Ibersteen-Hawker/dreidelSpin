@@ -117,7 +117,7 @@
               class="col-4 col-lg-2"
               :class="{'numberAnim': player.gain !== 0}"
             >
-              <span>{{player.gain}}</span>
+              <span>{{player.gain > 0 ? '+' : ''}}{{player.gain}}</span>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@
             :class="{'unspinnable': !spinnable.canSpin}"
             @click="spinDreidel()"
           ></div>
-          <div>dreidel result: {{result.result}}</div>
+          <div>dreidel result: {{result.result || "mistake"}}</div>
         </div>
         <div class="col-12 col-sm-3">
           <div
@@ -148,7 +148,7 @@
               class="col-4 col-lg-2"
               :class="{'numberAnim': player.gain !== 0}"
             >
-              <span>{{player.gain}}</span>
+              <span>{{player.gain > 0 ? '+' : ''}}{{player.gain}}</span>
             </div>
           </div>
         </div>
