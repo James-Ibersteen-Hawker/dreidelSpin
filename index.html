@@ -89,12 +89,14 @@
           </div>
         </div>
         <div class="col-12 startGame">
+          By Jo&nbsp;
           <input
             @click="startGame()"
             type="submit"
             value="Start Game"
             :disabled="players.length < 2"
           />
+          and Mo &nbsp;
         </div>
       </div>
     </div>
@@ -103,34 +105,48 @@
         <div class="col-3">
           Players:
           <div
-            class="player"
+            class="player row"
             v-for="player in playersLeft"
             :id="player.index"
             :class="{'turn': player.turn}"
           >
-            <h2>{{player.username}}</h2>
-            <div class="row">
-              <div class="col-12">Total: {{player.total}}</div>
+            <div class="playerBody col-8">
+              <h2>{{player.username}}</h2>
+              <div class="row">
+                <div class="col-12">Total: {{player.total}}</div>
+              </div>
+            </div>
+            <div class="col-4" :class="{'numberAnim': player.gain !== 0}">
+              <span>{{player.gain}}</span>
             </div>
           </div>
         </div>
         <div class="col-6">
           <div>Round: {{round}}</div>
           <div>Currency: {{currencyChosen}}</div>
-          <div id="canvasDiv"></div>
+          <div
+            id="canvasDiv"
+            :class="{'unspinnable': !spinnable.canSpin}"
+            @click="spinDreidel()"
+          ></div>
           <div>dreidel result: {{result.result}}</div>
         </div>
         <div class="col-3">
           Players:
           <div
-            class="player"
+            class="player row"
             v-for="player in playersRight"
             :id="player.index"
             :class="{'turn': player.turn}"
           >
-            <h2>{{player.username}}</h2>
-            <div class="row">
-              <div class="col-12">Total: {{player.total}}</div>
+            <div class="playerBody col-8">
+              <h2>{{player.username}}</h2>
+              <div class="row">
+                <div class="col-12">Total: {{player.total}}</div>
+              </div>
+            </div>
+            <div class="col-4" :class="{'numberAnim': player.gain !== 0}">
+              <span>{{player.gain}}</span>
             </div>
           </div>
         </div>

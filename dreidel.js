@@ -1,12 +1,23 @@
 class Player {
   constructor(username, index, total) {
     this.username = username;
-    this.total = total;
+    this._total = total;
     this.turn = false;
     this.index = index;
+    this.gain = 0;
+  }
+  get total() {
+    return this._total;
+  }
+  set total(v) {
+    const self = this;
+    this.gain = v - this._total;
+    this._total = v;
+    setTimeout(() => (self.gain = 0), 1500);
   }
 }
 const gameState = Vue.reactive({ result: "-" });
+const spinnable = Vue.reactive({ canSpin: false });
 const spin = {
   shape: null,
   img: null,
@@ -21,7 +32,7 @@ const spin = {
   handle: true,
   threshold: 0.06,
   decAMNT: 0.99,
-  sides: ["hey", "gimmel", "nun", "shin"],
+  sides: ["hei", "gimmel", "nun", "shin"],
   decreasing: false,
   lights: [
     [-1, 0],
@@ -29,6 +40,7 @@ const spin = {
     [0, -1],
     [1, 0],
   ],
+  endCallBack: function () {},
 };
 function preload() {
   spin.shape = loadModel("dreidel.obj", true); //load model here
@@ -97,14 +109,7 @@ function handle(angle) {
   const num = Math.round(angle / (Math.PI / 2)) % spin.sides.length;
   const result = spin.sides[num];
   gameState.result = result;
-  console.log(result);
-}
-function spinDreidel() {
-  spin.turn = true;
-  spin.match = false;
-  spin.dec = 1;
-  spin.decreasing = true;
-  spin.handle = true;
+  spin.endCallBack();
 }
 const app = Vue.createApp({
   data() {
@@ -121,17 +126,15 @@ const app = Vue.createApp({
       winner: null,
       currencyChosen: "",
       title: "Chanukah Dreidel",
+      spinnable: spinnable,
+      randomStartVal: Math.floor(Math.random() * (15 - 10)) + 10,
     };
   },
   methods: {
     addUser() {
       if (this.newUserName != "") {
         this.players.push(
-          new Player(
-            this.newUserName,
-            this.players.length,
-            this.randmNum(10, 15)
-          )
+          new Player(this.newUserName, this.players.length, this.randomStartVal)
         );
         this.newUserName = "";
       }
@@ -139,22 +142,84 @@ const app = Vue.createApp({
     deletePlayer(i) {
       this.players.splice(i, 1);
     },
-    startGame() {
+    async startGame() {
       document.querySelector(".openScreen").classList.add("off");
       this.players.forEach((e, i) => {
         if (i % 2 === 0) this.playersLeft.push(e);
         if (i % 2 === 1) this.playersRight.push(e);
       });
       this.currencyChosen = this.currency;
-      this.turn(0);
+      await this.wait(2000);
+      this.gameLoop();
+    },
+    async gameLoop() {
+      let i = 0;
+      this.players.forEach((e) => (e.total--, this.pot++));
+      await this.wait(1600);
+      while (this.players.length > 1) {
+        this.players.forEach((e) => (e.total--, this.pot++));
+        await this.wait(1600);
+        this.turn(i), this.round++;
+        const waitPress = new Promise((res) => (spin.endCallBack = res));
+        this.spinnable.canSpin = true;
+        await waitPress;
+        const currentPlayer = this.players[i];
+        switch (this.result.result) {
+          case "hei":
+            const half = Math.ceil(this.pot / 2);
+            this.pot -= half;
+            currentPlayer.total += half;
+            break;
+          case "gimmel":
+            currentPlayer.total += this.pot;
+            this.pot = 0;
+            break;
+          case "nun":
+            break;
+          case "shin":
+            currentPlayer.total--;
+            this.pot++;
+            break;
+        }
+        await this.wait(1600);
+        currentPlayer.total--;
+        this.pot++;
+        await this.wait(3600);
+        if (currentPlayer.total <= 0) {
+          alert(`${currentPlayer.username} is out`);
+          this.players.splice(i, 1);
+          this.playersLeft.length = 0;
+          this.playersRight.length = 0;
+          this.players.forEach((e, i) => {
+            if (i % 2 === 0) this.playersLeft.push(e);
+            if (i % 2 === 1) this.playersRight.push(e);
+          });
+        } else i = (i + 1) % this.players.length;
+        this.returnNormal();
+      }
+      this.winner = this.players?.[0]?.username;
     },
     turn(index) {
-      this.players.forEach((e, i) => {
-        e.turn = index === i ? true : false;
-      });
+      this.players.forEach((e, i) => (e.turn = index === i ? true : false));
     },
-    randmNum(max, min) {
-      return Math.floor(Math.random() * (max - min)) + min;
+    spinDreidel() {
+      spinnable.canSpin = false;
+      spin.turn = true;
+      spin.match = false;
+      spin.dec = 1;
+      spin.decreasing = true;
+      spin.handle = true;
+    },
+    returnNormal() {
+      spin.decreasing = false;
+      spin.turn = true;
+      spin.match = false;
+      spin.dec = 1;
+      spin.handle = true;
+      this.result = "-";
+    },
+    wait(t) {
+      return new Promise((resolve) => setTimeout(resolve, t));
     },
   },
 }).mount("#vue_app");
