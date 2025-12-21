@@ -52,7 +52,7 @@ function preload() {
 }
 function setup() {
   const myCanvas = createCanvas(300, 300, WEBGL);
-  myCanvas.parent("#canvasDiv");
+  myCanvas.parent("#place");
   describe("A dreidel");
 }
 function draw() {
@@ -116,6 +116,10 @@ function handle(angle) {
   spin.endCallBack();
 }
 const app = Vue.createApp({
+  async created() {
+    const file = await (await fetch("symbols.json")).json();
+    this.symbols = file;
+  },
   data() {
     return {
       gameState: gameState,
@@ -132,6 +136,9 @@ const app = Vue.createApp({
       title: "Chanukah Dreidel",
       spinnable: spinnable,
       randomStartVal: Math.floor(Math.random() * (15 - 10)) + 10,
+      symbols: null,
+      currentSymbol: null,
+      footerText: "By: Remy Serbinenko, Jo, and Mo — December 21st, 2025",
     };
   },
   methods: {
@@ -161,6 +168,7 @@ const app = Vue.createApp({
       this.giveOne();
       await this.wait(1600);
       while (this.players.length > 1) {
+        this.currentSymbol = null;
         const currentPlayer = this.players[i];
         this.turn(i);
         this.giveOne();
@@ -180,7 +188,7 @@ const app = Vue.createApp({
         }
         currentPlayer.total--;
         this.pot++;
-        await this.wait(1600);
+        await this.wait(2600);
         this.returnNormal();
         if (currentPlayer.total <= 0) {
           this.removeAndBuild(i);
@@ -238,6 +246,7 @@ const app = Vue.createApp({
           this.pot++;
           break;
       }
+      this.currentSymbol = this.symbols.find((e) => e.name === state);
     },
     removeAndBuild(i) {
       this.players.splice(i, 1);

@@ -1,0 +1,26 @@
+[
+    {
+        "name": "hei",
+        "meaning": "Halb",
+        "action": "Get Half",
+        "imgFile": "./symbols/hei.jpg"
+    },
+    {
+        "name": "gimmel",
+        "meaning": "Gantz",
+        "action": "Get All",
+        "imgFile": "./symbols/gimmel.webp"
+    },
+    {
+        "name": "nun",
+        "meaning": "Nothing",
+        "action": "Get Nothing",
+        "imgFile": "./symbols/nun.jpeg"
+    },
+    {
+        "name": "shin",
+        "meaning": "Shtel",
+        "action": "Add One",
+        "imgFile": "./symbols/shin.png"
+    }
+]
