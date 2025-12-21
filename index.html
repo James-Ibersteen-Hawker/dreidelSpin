@@ -122,16 +122,14 @@
           </div>
         </div>
         <div class="col-12 col-sm-6">
-          <div>
-            Round {{round - 1}}, {{players[round - 2]?.username}}'s Turn
-          </div>
+          <div>Round {{round}}, {{players[round - 1]?.username}}'s Turn</div>
           <div>Currency: {{currencyChosen}}</div>
           <div
             id="canvasDiv"
             :class="{'unspinnable': !spinnable.canSpin}"
             @click="spinDreidel()"
           ></div>
-          <div>dreidel result: {{result.result || "mistake"}}</div>
+          <div>dreidel result: {{gameState.result || "mistake"}}</div>
         </div>
         <div class="col-12 col-sm-3">
           <div

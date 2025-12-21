@@ -1,3 +1,4 @@
+"use strict";
 class Player {
   constructor(username, index, total) {
     this.username = username;
@@ -5,6 +6,7 @@ class Player {
     this.turn = false;
     this.index = index;
     this.gain = 0;
+    this.went = false;
   }
   get total() {
     return this._total;
@@ -32,7 +34,7 @@ const spin = {
   handle: true,
   threshold: 0.06,
   decAMNT: 0.99,
-  sides: ["gimmel", "gimmel", "gimmel", "gimmel"], //hei, gimmel, nun, shin
+  sides: ["hei", "gimmel", "nun", "shin"],
   decreasing: false,
   lights: [
     [-1, 0],
@@ -42,6 +44,8 @@ const spin = {
   ],
   endCallBack: function () {},
 };
+Object.freeze(spin.sides);
+Object.freeze(spin.lights);
 function preload() {
   spin.shape = loadModel("dreidel.obj", true); //load model here
   spin.img = loadImage("Dreidel.png");
@@ -114,7 +118,7 @@ function handle(angle) {
 const app = Vue.createApp({
   data() {
     return {
-      result: gameState,
+      gameState: gameState,
       currencies: ["Chocolate Chips", "Tokens", "Coins", "$100 Bills"],
       currency: "Chocolate Chips",
       players: [],
@@ -157,46 +161,37 @@ const app = Vue.createApp({
       this.giveOne();
       await this.wait(1600);
       while (this.players.length > 1) {
+        const currentPlayer = this.players[i];
+        this.turn(i);
         this.giveOne();
         await this.wait(1600);
-        this.turn(i);
+        if (currentPlayer.total <= 0) {
+          this.removeAndBuild(i);
+          continue;
+        }
         const waitPress = new Promise((res) => (spin.endCallBack = res));
         this.spinnable.canSpin = true;
         await waitPress;
-        const currentPlayer = this.players[i];
-        switch (this.result.result) {
-          case "hei":
-            const half = Math.ceil(this.pot / 2);
-            this.pot -= half;
-            currentPlayer.total += half;
-            break;
-          case "gimmel":
-            currentPlayer.total += this.pot;
-            this.pot = 0;
-            break;
-          case "nun":
-            break;
-          case "shin":
-            currentPlayer.total--;
-            this.pot++;
-            break;
-        }
+        this.Game(currentPlayer, this.gameState.result);
         await this.wait(1600);
+        if (currentPlayer.total <= 0) {
+          this.removeAndBuild(i);
+          continue;
+        }
         currentPlayer.total--;
         this.pot++;
         await this.wait(1600);
-        if (currentPlayer.total <= 0) {
-          alert(`${currentPlayer.username} is out`);
-          this.players.splice(i, 1);
-          this.playersLeft.length = 0;
-          this.playersRight.length = 0;
-          this.players.forEach((e, i) => {
-            if (i % 2 === 0) this.playersLeft.push(e);
-            if (i % 2 === 1) this.playersRight.push(e);
-          });
-        } else i = (i + 1) % this.players.length;
         this.returnNormal();
-        this.round++;
+        if (currentPlayer.total <= 0) {
+          this.removeAndBuild(i);
+          continue;
+        }
+        i = (i + 1) % this.players.length;
+        currentPlayer.went = true;
+        if (this.players.every((e) => e.went === true)) {
+          this.round++;
+          this.players.forEach((e) => (e.went = false));
+        }
       }
       this.winner = this.players?.[0]?.username;
     },
@@ -217,13 +212,41 @@ const app = Vue.createApp({
       spin.match = false;
       spin.dec = 1;
       spin.handle = true;
-      this.result.result = "-";
+      this.gameState.result = "-";
     },
     wait(t) {
       return new Promise((resolve) => setTimeout(resolve, t));
     },
     giveOne() {
       this.players.forEach((e) => (e.total--, this.pot++));
+    },
+    Game(currentPlayer, state) {
+      switch (state) {
+        case "hei":
+          const half = Math.ceil(this.pot / 2);
+          this.pot -= half;
+          currentPlayer.total += half;
+          break;
+        case "gimmel":
+          currentPlayer.total += this.pot;
+          this.pot = 0;
+          break;
+        case "nun":
+          break;
+        case "shin":
+          currentPlayer.total--;
+          this.pot++;
+          break;
+      }
+    },
+    removeAndBuild(i) {
+      this.players.splice(i, 1);
+      this.playersLeft.length = 0;
+      this.playersRight.length = 0;
+      this.players.forEach((e, i) => {
+        if (i % 2 === 0) this.playersLeft.push(e);
+        if (i % 2 === 1) this.playersRight.push(e);
+      });
     },
   },
 }).mount("#vue_app");
