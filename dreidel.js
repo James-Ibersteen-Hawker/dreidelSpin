@@ -138,6 +138,7 @@ const app = Vue.createApp({
       randomStartVal: Math.floor(Math.random() * (15 - 10)) + 10,
       symbols: null,
       currentSymbol: null,
+      currentPlayer: null,
       footerText: "By: Remy Serbinenko, Jo, and Mo — December 21st, 2025",
     };
   },
@@ -170,6 +171,7 @@ const app = Vue.createApp({
       while (this.players.length > 1) {
         this.currentSymbol = null;
         const currentPlayer = this.players[i];
+        this.currentPlayer = currentPlayer.username;
         this.turn(i);
         this.giveOne();
         await this.wait(1600);
@@ -186,8 +188,8 @@ const app = Vue.createApp({
           this.removeAndBuild(i);
           continue;
         }
-        currentPlayer.total--;
-        this.pot++;
+        // currentPlayer.total--;
+        // this.pot++;
         await this.wait(2600);
         this.returnNormal();
         if (currentPlayer.total <= 0) {

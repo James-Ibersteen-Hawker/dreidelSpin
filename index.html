@@ -122,14 +122,14 @@
           </div>
         </div>
         <div class="col-12 col-md-6">
-          <div>Round {{round}}, {{players[round - 1]?.username}}'s Turn</div>
+          <div>Round {{round}}, {{currentPlayer}}'s Turn</div>
           <div>Currency: {{currencyChosen}}</div>
           <div
             id="canvasDiv"
             :class="{'unspinnable': !spinnable.canSpin}"
             @click="spinDreidel()"
           >
-            <div>
+            <div class="spinText">
               {{!spinnable.canSpin ? "&nbsp;" : "Click to Spin the Dreidel"}}
             </div>
             <div id="place"></div>
@@ -142,10 +142,11 @@
               <div class="col-8">
                 <div class="name">{{currentSymbol?.name || "Name"}}</div>
                 <div class="action">Effect: {{currentSymbol?.action}}</div>
-                <div class="meaning">Meaning: {{currentSymbol?.meaning}}</div>
               </div>
             </div>
           </div>
+          <div class="pot">Pot: {{pot}}</div>
+          <div class="winner" :class="{'off': !winner}">{{winner}} wins!</div>
         </div>
         <div class="col-12 col-md-3">
           <div
@@ -165,10 +166,6 @@
               <span>{{player.gain > 0 ? '+' : ''}}{{player.gain}}</span>
             </div>
           </div>
-        </div>
-        <div class="col-12 pot">Pot: {{pot}}</div>
-        <div class="col-12 winner" :class="{'off': !winner}">
-          {{winner}} wins!
         </div>
       </div>
     </main>
