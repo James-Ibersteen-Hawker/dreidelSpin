@@ -200,6 +200,13 @@ html {
               width: 95%;
               letter-spacing: 2px;
             }
+            .rules {
+              border-top: var(--standardBorder);
+              padding: 5px;
+              margin-top: 2px;
+              font-family: "Times New Roman", Times, serif;
+              font-style: italic;
+            }
           }
         }
       }

@@ -139,6 +139,8 @@ const app = Vue.createApp({
       symbols: null,
       currentSymbol: null,
       currentPlayer: null,
+      rules:
+        "All players start with between 10 - 15 currency items. At the start of the game / round, each player contributes 1 to the pot. Then, each player spins the dreidel and applies the result. Move on to the next player. Everybody contribues 1 to the pot, repeat.",
       footerText: "By: Remy Serbinenko, Jo, and Mo — December 21st, 2025",
     };
   },
