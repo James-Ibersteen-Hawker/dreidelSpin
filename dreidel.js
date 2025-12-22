@@ -26,7 +26,7 @@ const spin = {
   curANG: 0,
   dec: 1,
   turn: true,
-  speed: 0.2,
+  speed: 0.5,
   spINC: 0,
   runTotal: Math.PI / 2,
   incr: Math.PI / 2,
